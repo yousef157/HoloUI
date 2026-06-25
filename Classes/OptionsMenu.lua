@@ -16,8 +16,7 @@ function self:Init()
         layer = 1000,
 		animate_toggle = true,
 		use_default_close_key = true,
-        toggle_key = Holo.Options:GetValue("OptionsKey"),
-        toggle_clbk = ClassClbk(self, "SetEnabled"),
+        toggle_key = Holo.Options:GetValue("OptionsKey")
     })
     self._tabs = self._menu:Menu({
         name = "tabs",
@@ -41,7 +40,7 @@ function self:Init()
         text = "Holo/Close",
         position = "RightOffset-x",
         localized = true,
-        on_callback = MenuCallbackHandler.OpenHoloMenu
+        on_callback = ClassClbk(self._menu, "SetEnabled", false)
     })
     close.bg:configure({h = 2, rotation = 360, y = close:Panel():h() + 2})
     close.highlight_bg:configure({h = 2, rotation = 360, y = close:Panel():h() + 2})
@@ -57,17 +56,6 @@ function self:Init()
         self["Create"..string.capitalize(name).."Menu"](self, menu)
     end
     self:SwitchMenu("Main")
-end
-
-function self:SetEnabled(menu, enabled)
-	if not game_state_machine then
-		return
-	end
-	if enabled and managers.player:player_unit() then
-		game_state_machine:current_state():set_controller_enabled(false)
-	else
-		game_state_machine:current_state():set_controller_enabled(true)
-	end
 end
 
 function self:CreateItem(upper, setting, menu)
