@@ -16,6 +16,7 @@ function self:Init()
         layer = 1000,
 		animate_toggle = true,
 		use_default_close_key = true,
+        toggle_clbk = ClassClbk(self, "SetEnabled"),
         toggle_key = Holo.Options:GetValue("OptionsKey")
     })
     self._tabs = self._menu:Menu({
@@ -56,6 +57,18 @@ function self:Init()
         self["Create"..string.capitalize(name).."Menu"](self, menu)
     end
     self:SwitchMenu("Main")
+end
+
+function self:SetEnabled(menu, enabled)
+    if not managers.player:player_unit() then
+        return
+    end
+
+    if enabled then
+        game_state_machine:current_state():set_controller_enabled(false)
+    elseif not managers.menu:is_active() then
+        game_state_machine:current_state():set_controller_enabled(true)
+    end
 end
 
 function self:CreateItem(upper, setting, menu)
