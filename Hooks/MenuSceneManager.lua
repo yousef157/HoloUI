@@ -11,7 +11,11 @@ if not GameSetup and Holo:ShouldModify("Menu", "ColoredBackground") then
 			return
 		end
 		local w,h = 1920, 1080
-		local a,b,c = cam:position() + Vector3(-1, 584, -h/2+1):rotate_with(cam:rotation()), Vector3(0, w, 0):rotate_with(cam:rotation()) , Vector3(0, 0, h):rotate_with(cam:rotation())
+
+		local a = cam:position() + Vector3(0, 0, -h/2):rotate_with(cam:rotation())
+		local b = Vector3(0, w, 0):rotate_with(cam:rotation())
+		local c = Vector3(0, 0, h):rotate_with(cam:rotation())
+
 		if alive(self._background_ws) then
 			self._background_ws:set_world(w,h,a,b,c)
 			self._background_ws:panel():child("bg"):set_color(Holo:GetColor("Colors/Menu"))
