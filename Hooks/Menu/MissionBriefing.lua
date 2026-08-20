@@ -120,21 +120,16 @@ end)
 
 Holo:Post(HUDMissionBriefing, "set_player_slot", function(self, nr, params)
 	local slot = self._ready_slot_panel:child("slot_" .. tostring(nr))
-	if not slot or not alive(slot) or not Steam then
+	if not slot or not alive(slot) then
 		return
 	end
 	local peer = managers.network:session():peer(nr) or nil
-	local steam_id = peer and peer:account_id() or nr == 1 and Steam:userid() or nil
+	local steam_id = peer and peer:account_id() or nr == 1 and Distribution:local_user_id() or nil
 	if steam_id then
 		--Make sure we have the texture loaded, lets choose large so it's loaded in cache
 		local avatar = slot:child("avatar")
-		Steam:friend_avatar(Steam.LARGE_AVATAR, steam_id, function(texture) --ovk pls fix, it returns question mark avatar without waiting
-			avatar:animate(function()
-				wait(1)
-				Steam:friend_avatar(Steam.LARGE_AVATAR, steam_id, function(texture)
-					avatar:set_image(texture or "guis/textures/pd2/none_icon")
-				end)
-			end)
+		Distribution:request_user_profile_picture(Distribution.ProfilePictureSize_Large, steam_id, function(texture) -- thx stg :D
+			avatar:set_image(texture or "guis/textures/pd2/none_icon")
 		end)
 	end
 end)

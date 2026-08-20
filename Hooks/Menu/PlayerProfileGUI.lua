@@ -18,17 +18,10 @@ Holo:Post(PlayerProfileGuiObject, "init", function(self)
         h = 86,
     })
 
-    if Steam then
-        local steam_id = Steam:userid()
-        Steam:friend_avatar(Steam.LARGE_AVATAR, steam_id, function(texture)
-            avatar:animate(function()
-                wait(0.25)
-                Steam:friend_avatar(Steam.LARGE_AVATAR, steam_id, function(texture)
-                    avatar:set_image(texture or "guis/textures/pd2/none_icon")
-                end)
-            end)
-        end)
-    end
+    local steam_id = Distribution:local_user_id()
+    Distribution:request_user_profile_picture(Distribution.ProfilePictureSize_Large, steam_id, function(texture)
+        avatar:set_image(texture or "guis/textures/pd2/none_icon")
+    end)
     local font = tweak_data.menu.pd2_large_font
     local font_size = tweak_data.menu.pd2_small_font_size
     local prev

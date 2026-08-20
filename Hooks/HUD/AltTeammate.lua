@@ -72,20 +72,11 @@ Holo:Post(HUDTeammate, "set_name", function(self, teammate_name)
 end)
 
 function HUDTeammate:set_avatar()
-	if not Steam then
-		return
-	end
-
 	local peer = self._peer_id and managers.network:session():peer(self._peer_id) or nil
-	local steam_id = peer and peer:account_id() or self._main_player and Steam:userid() or nil
+	local steam_id = peer and peer:account_id() or self._main_player and Distribution:local_user_id() or nil
 	if steam_id and not self._ai then
-		Steam:friend_avatar(Steam.LARGE_AVATAR, steam_id, function(texture)
-			self._player_panel:child("avatar"):animate(function()
-				wait(1)
-				Steam:friend_avatar(Steam.LARGE_AVATAR, steam_id, function(texture)
-					self:set_player_avatar(texture or "guis/textures/pd2/none_icon")
-				end)
-			end)
+		Distribution:request_user_profile_picture(Distribution.ProfilePictureSize_Large, steam_id, function(texture)
+			self:set_player_avatar(texture or "guis/textures/pd2/none_icon")
 		end)
 	else
 		self:set_player_avatar(self._ai and "ui/holo/ai_text" or "guis/textures/pd2/none_icon")
