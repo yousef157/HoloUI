@@ -2,8 +2,23 @@ if not GameSetup and Holo:ShouldModify("Menu", "ColoredBackground") then
 	if Holo:ShouldModify("Menu", "PlayerProfile") then
 		Holo:Post(MenuSceneManager, "_set_up_templates", function(self)
 			self._scene_templates.standard.character_pos = Vector3(-32, 10.66, -137)
+			self:turn_off_effects()
 		end)
 	end
+
+	function MenuSceneManager:turn_off_effects()
+		local vp = managers.viewport:first_active_viewport()
+
+		if vp then
+			vp:vp():set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine_empty"))
+		end
+
+		World:effect_manager():set_rendering_enabled(Global.load_level)
+	end
+
+	Holo:Post(MenuSceneManager, "set_scene_template", function(self)
+		self:turn_off_effects()
+	end)
 
 	function MenuSceneManager:HoloUpdate()
 		local cam = managers.viewport:get_current_camera()
@@ -36,10 +51,6 @@ if not GameSetup and Holo:ShouldModify("Menu", "ColoredBackground") then
 				h = h,
 			})
 			self._background_ws:set_billboard(Workspace.BILLBOARD_BOTH)
-		end
-		World:effect_manager():set_rendering_enabled(Global.load_level)
-		if managers.environment_controller._vp then
-			managers.environment_controller._vp:vp():set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine_empty"))
 		end
 		local unwanted = {
 			"units/menu/menu_scene/menu_cylinder",
