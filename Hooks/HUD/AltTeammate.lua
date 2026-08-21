@@ -60,6 +60,7 @@ Holo:Post(HUDTeammate, "init", function(self)
 		texture = "guis/textures/pd2/none_icon",
 		layer = 10
 	})
+
 	self._panel:rect({name = "teammate_line", w = 2, layer = 5})
 	self:layout_special_equipments()
 	self:UpdateHolo()
@@ -105,7 +106,7 @@ function HUDTeammate:UpdateHolo()
 	--if self._ai then
 	--	self:DebugWithAI()
 	--end
-	
+
 	self:set_avatar()		
 	local weapons_panel = self._player_panel:child("weapons_panel")
 	local secondary = weapons_panel:child("secondary_weapon_panel")
@@ -176,15 +177,16 @@ function HUDTeammate:UpdateHolo()
 	teammate_line:set_size(large_tm and 0 or 2, name:h() - 2)
 	teammate_line:set_x(name_bg:x())
 	teammate_line:set_center_y(name:center_y() - 1)
-			
+
 	--Weapons
 	local ww = show_all and 54 or 48
 	if show_all then
 		weapons_panel:set_size(ww, 48)
+        weapons_panel:set_righttop(bg:right() - 8, hp:y())
 	else
-		weapons_panel:set_size(ww, 64)
+		weapons_panel:set_size(ww, 32)
+        weapons_panel:set_righttop(bg:right() - 8, hp:y())
 	end
-	weapons_panel:set_righttop(bg:right() - 8, hp:y())
 	
 	for i, panel in pairs({primary, secondary}) do
 		panel:child("bg"):hide()
@@ -216,7 +218,7 @@ function HUDTeammate:UpdateHolo()
 		else
 			panel:set_size(weapons_panel:size())
 			local sec = i==2
-			 ammo_total:set_shape(0, -6, panel:size())
+            ammo_total:set_shape(0, -6, panel:size())
 			ammo_total:set_align(sec and "right" or "left")
 		end
 		ammo_total:set_color(text_color)
@@ -254,8 +256,8 @@ function HUDTeammate:UpdateHolo()
 	local nades_icon = nades:child("grenades_icon")
 	for _, v in pairs({nades_icon, cable:child("cable_ties"), dep:child("equipment")}) do
 		v:configure({
-			w = eq_size - 2,
-			h = eq_size - 2,
+			w = 16,
+			h = 16,
 			x = 0,
 			color = text_color
 		})
@@ -266,7 +268,7 @@ function HUDTeammate:UpdateHolo()
 
 	local condition_icon = self._panel:child("condition_icon")
 	local condition_timer = self._panel:child("condition_timer")
-	local condition_font_size = 14
+	local condition_font_size = 16
 	condition_icon:set_size(condition_font_size, condition_font_size)
 	condition_timer:set_font_size(condition_font_size)
 	condition_timer:set_shape(condition_icon:shape())
@@ -290,6 +292,13 @@ function HUDTeammate:UpdateHolo()
 	}, {visible = false, alpha = 0})
 	self._player_panel:child("radial_health_panel"):hide()
 	self._player_panel:child("interact_panel"):set_alpha(0)
+
+    local revive_panel = self._player_panel:child("revive_panel")
+    revive_panel:set_right(self._player_panel:right() - 6)
+    revive_panel:set_y(name:y() + ((compact or me) and 4 or 0))
+    revive_panel:child("revive_bg"):set_alpha(0)
+    revive_panel:child("revive_arrow"):set_alpha(0)
+
 	self:recreate_weapon_firemode()
 end
 
