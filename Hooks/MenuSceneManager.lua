@@ -50,6 +50,12 @@ if not GameSetup then
 	Holo:Post(MenuSceneManager, "_setup_bg", function(self)
 		if Holo.Options:GetValue("ColoredBackground") then
 			self._bg_unit:set_visible(false)
+			for _, unit in pairs(World:find_units_quick("all")) do
+				if unit:name() == Idstring("units/menu/menu_scene/menu_solid_bg") then
+					unit:set_slot(0)
+					break
+				end
+			end
 		end
 	end)
 
@@ -73,6 +79,12 @@ if not GameSetup then
 			managers.environment_controller:set_default_color_grading(color_grading, true)
 			managers.environment_controller:refresh_render_settings()
 		end
+
+		local vp = managers.viewport:first_active_viewport()
+		if vp then
+			local vp_obj = vp:vp()
+			vp_obj:set_post_processor_effect("World", Idstring("bloom_combine_post_processor"), Idstring("bloom_combine_empty"))
+		end
 	end)
 
 	local x = Vector3()
@@ -92,7 +104,7 @@ if not GameSetup then
 			return
 		end
 
-		local w, h = 1280, 720
+		local w, h = 1920, 1080
 		local pos = cam:position()
 		local rot = cam:rotation()
 		mvector3.set_static(x, 0, 0, -h / 2)
