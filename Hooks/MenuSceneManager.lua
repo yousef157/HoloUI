@@ -20,6 +20,7 @@ if not GameSetup then
 		local visible = not bg_option
 		self._menu_logo:set_visible(visible)
 		self._bg_unit:set_visible(visible)
+		self._menu_solid_bg:set_visible(visible)
 
 		if self._workbench_room then
 			self._workbench_room:set_visible(visible)
@@ -48,14 +49,18 @@ if not GameSetup then
 	end)
 
 	Holo:Post(MenuSceneManager, "_setup_bg", function(self)
-		if Holo.Options:GetValue("ColoredBackground") then
-			self._bg_unit:set_visible(false)
+		if not self._menu_solid_bg then
 			for _, unit in pairs(World:find_units_quick("all")) do
 				if unit:name() == Idstring("units/menu/menu_scene/menu_solid_bg") then
-					unit:set_slot(0)
+					self._menu_solid_bg = unit
 					break
 				end
 			end
+		end
+
+		if Holo.Options:GetValue("ColoredBackground") then
+			self._bg_unit:set_visible(false)
+			self._menu_solid_bg:set_visible(false)
 		end
 	end)
 
@@ -74,7 +79,7 @@ if not GameSetup then
 			local setting = environments[name]
 			color_grading = setting and setting.color_grading or environments.standard.color_grading
 		end
-	
+
 		if managers.environment_controller:default_color_grading() ~= color_grading then
 			managers.environment_controller:set_default_color_grading(color_grading, true)
 			managers.environment_controller:refresh_render_settings()
